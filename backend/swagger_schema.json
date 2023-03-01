@@ -1,0 +1,688 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Tapio API",
+        "version": "1.0.0",
+        "description": "Projection tool to allow our experts to design reduction strategies for ourclients. The usual carbon report would have several sources attached to it. The toolwould allow to register potential modification to those sources."
+    },
+    "paths": {
+        "/api/report/": {
+            "get": {
+                "operationId": "report_list",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "tags": [
+                    "report"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Report"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "report_create",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "tags": [
+                    "report"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/report/{id}/": {
+            "get": {
+                "operationId": "report_retrieve",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this report.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "report"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "report_update",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this report.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "report"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Report"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "report_partial_update",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this report.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "report"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedReport"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedReport"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedReport"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Report"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "report_destroy",
+                "description": "The Report is the sum of all the emissions. It should be done once a year\n\nlist:\n    Retrieve the list of reports.\n\nretrieve:\n    Retrieve all information about a specific report.\n\ncreate:\n    Create a new report.\n\ndelete:\n    Remove an existing report.\n\npartial_update:\n    Update one or more fields on an existing report.\n\nupdate:\n    Update an report.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this report.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "report"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/source/": {
+            "get": {
+                "operationId": "source_list",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "tags": [
+                    "source"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Source"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "source_create",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "tags": [
+                    "source"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Source"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/source/{id}/": {
+            "get": {
+                "operationId": "source_retrieve",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this source.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "source"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Source"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "source_update",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this source.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "source"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Source"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Source"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "source_partial_update",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this source.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "source"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedSource"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedSource"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedSource"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Source"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "source_destroy",
+                "description": "An Emission is every source that generates GreenHouse gases (GHG).\nIt could be defined as source x emission_factor = total\n\nlist:\n    Retrieve the list of sources.\n\nretrieve:\n    Retrieve all information about a specific source.\n\ncreate:\n    Create a new source.\n\ndelete:\n    Remove an existing source.\n\npartial_update:\n    Update one or more fields on an existing source.\n\nupdate:\n    Update an source.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "A unique integer value identifying this source.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "source"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    },
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PatchedReport": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            },
+            "PatchedSource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 250
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "emission_factor": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "total_emission": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true,
+                        "description": "Unit in kg"
+                    },
+                    "lifetime": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "nullable": true
+                    },
+                    "acquisition_year": {
+                        "type": "integer",
+                        "maximum": 32767,
+                        "minimum": 0,
+                        "nullable": true
+                    },
+                    "report": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                }
+            },
+            "Report": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "date",
+                    "id"
+                ]
+            },
+            "Source": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 250
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "emission_factor": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "total_emission": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true,
+                        "description": "Unit in kg"
+                    },
+                    "lifetime": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0,
+                        "nullable": true
+                    },
+                    "acquisition_year": {
+                        "type": "integer",
+                        "maximum": 32767,
+                        "minimum": 0,
+                        "nullable": true
+                    },
+                    "report": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "cookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
+            }
+        }
+    }
+}

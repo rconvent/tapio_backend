@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "tapio"
+version = "0.1.0"
+description = ""
+authors = ["raphael convent <raphael@youmeal.io>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "4.1"
+pyscopg2 = "^66.0.2"
+djangorestframework = "^3.14.0"
+markdown = "^3.4.1"
+django-filter = "^22.1"
+pylint = "^2.16.2"
+mypy = "^1.0.1"
+black = "^23.1.0"
+django-rest-swagger = "^2.2.0"
+drf-spectacular = "^0.25.1"
+django-mptt = "^0.14.0"
+django-rest-registration = "^0.7.3"
+django-middleware-global-request = "^0.3.1"
+
+
+[tool.poetry.group.dev.dependencies]
+psycopg2-binary = "^2.9.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

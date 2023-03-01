@@ -1,0 +1,30 @@
+version: "1.0"
+   
+services:
+  tapio_db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres1234
+  tapio_app:
+    build: 
+      context: backend
+      dockerfile: ./Dockerfile
+    working_dir: /home/root/app
+    command:
+      python manage.py runserver 0.0.0.0:8000
+    tty: true
+    volumes:
+      - ./backend/:/home/root/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - tapio_db
+
+volumes:
+  postgres_data:  

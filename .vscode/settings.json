@@ -1,0 +1,46 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+    "python.formatting.provider": "none",
+    "python.analysis.completeFunctionParens": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+      "--rcfile=${workspaceFolder}/backend/pyproject.toml"
+    ],
+    "python.linting.pylintCategorySeverity.convention": "Warning",
+    "python.linting.pylintCategorySeverity.refactor": "Warning",
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+      "--follow-imports=silent",
+      "--ignore-missing-imports",
+      "--show-column-numbers"
+    ],
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "[python]":{
+      "editor.defaultFormatter": "ms-python.black-formatter",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+        "source.fixAll": true
+      }
+    },
+    "isort.args":["--profile", "black"],
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/.venv/**": true,
+      "**/__pycache__/**": true
+    },
+    "search.exclude": {
+      "**/.venv" : true
+    },
+    "python.analysis.inlayHints.variableTypes": false,
+    "python.analysis.inlayHints.functionReturnTypes": true,
+    "python.envFile": "${workspaceFolder}/backend/.env",
+    "python.languageServer": "Pylance"
+  }
+  
