@@ -1,16 +1,11 @@
 from django.urls import include, re_path
 from rest_framework.routers import DefaultRouter
-from tapio.viewsets import (
-    CompanyViewSet,
-    ProfileViewSet,
-    ReportViewSet,
-    SourceViewSet,
-    UnitViewSet,
-)
+from tapio.viewsets import *
 
 router = DefaultRouter()
 router.register(r"report", ReportViewSet)
 router.register(r"source", SourceViewSet)
+router.register(r"modifiedSource", ModifiedSourceViewSet)
 router.register(r"company", CompanyViewSet)
 router.register(r"unit", UnitViewSet)
 

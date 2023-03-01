@@ -1,7 +1,7 @@
 
 from django.db import models
 from django.utils.translation import gettext as _
-from tapio.models import Report
+from tapio.models import Source
 
 
 # Create your models here.
@@ -12,7 +12,7 @@ class Report(models.Model):
     """   
     names = models.JSONField(default=dict, editable=True, blank=True, help_text=_("names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}"))
     date = models.DateField()
-    sources = models.ForeignKey(Report, on_delete=models.CASCADE, blank=True, null=True, related_name="reports")    
+    sources = models.ForeignKey(Source, on_delete=models.CASCADE, blank=True, null=True, related_name="reports")    
 
     def get_name(self):
         return str(self.names.get("fr", next((name for name in self.names.values()), "NoName")))
