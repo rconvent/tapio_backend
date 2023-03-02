@@ -1,7 +1,15 @@
+from collections import defaultdict
+
 from django.contrib.auth import get_user_model
+from django.db.models import F, Sum
+from django.db.models.functions import Coalesce
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from tapio.filters import *
 from tapio.models import *
@@ -25,6 +33,30 @@ class ReportViewSet(ModelViewSet):
     filterset_class = ReportFilter
     search_fields = ["names"]
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("start_year", OpenApiTypes.INT),
+            OpenApiParameter("end_year", OpenApiTypes.INT),
+        ]
+    )
+    @action(methods=["get"], detail=False, url_path="years_emission")
+    def get_years_emission(self, request, *args, **kwargs):
+        
+        start_year = request.query_params.get("start_year", 2999)
+        end_year = request.query_params.get("end_year", 1900)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(date__year__gte=start_year, date__year__lte=end_year)
+        queryset = queryset.annotate(
+            source_emissions = Sum(Coalesce(F("sources__total_emission"), 0.0))
+        )
+
+        emissions = defaultdict(int)
+        for item in queryset.values("date__year", "source_emissions"):
+            emissions[item.get("date__year", 0)] += item.get("source_emissions")
+        
+        return Response(emissions)
+
 
 
 class SourceViewSet(ModelViewSet):
@@ -45,6 +77,32 @@ class SourceViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = SourceFilter
     search_fields = ["names"]
+
+
+    @action(methods=["get"], detail=False, url_path="years_emission")
+    def get_years_emission(self, request, *args, **kwargs):
+        
+        
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.annotate(
+            source_emissions = Sum(Coalesce(F("total_emission"), 0.0))
+        )
+
+        items_list = list(queryset.values("acquisition_year", "lifetime", "total_emission"))
+        date_from = request.query_params.get("acquisition_year_after", 0)
+        date_to = request.query_params.get("end_year_befor", 2999)
+        
+        print("\n\nDEBUG   : ", type(date_to), type(date_from), end="\n")
+        
+        emissions= {}
+        for year in range(int(date_from), int(date_to)+1):
+
+            emissions[year] = sum(
+                item.get("total_emission", 0) for item in items_list  if item.get("acquisition_year", 2999) <= year <=item.get("acquisition_year", 0)+(item.get("lifetime") or 0)
+            )
+        
+        return Response(emissions)
+    
 
 class ModifiedSourceViewSet(ModelViewSet):
     """    

@@ -1,6 +1,6 @@
 from django.db.models import F
 from django.db.models.functions import Coalesce
-from django_filters import CharFilter, DateFilter, FilterSet, RangeFilter
+from django_filters import CharFilter, DateFilter, FilterSet, NumberFilter
 from tapio.models import *
 
 
@@ -8,7 +8,7 @@ class ReportFilter(FilterSet):
 
     date_from = DateFilter(field_name="date", lookup_expr='gte')
     date_to = DateFilter(field_name="date", lookup_expr='lte')
-    year = CharFilter(field_name="date__year")
+    year = NumberFilter(field_name="date__year")
 
     class Meta:
         model = Report
@@ -23,11 +23,13 @@ class SourceFilter(FilterSet):
         )    
         return super().filter_queryset(queryset)
     
-    acquisition_year = CharFilter(field_name="acquisition_year")
-    end_year = CharFilter(field_name="end_year")
+    acquisition_year_after = NumberFilter(field_name="acquisition_year",  lookup_expr='gte')
+    end_year_befor = NumberFilter(field_name="end_year",  lookup_expr='lte')
 
 
 
     class Meta:
         model = Source
-        fields = ['acquisition_year', 'end_year']
+        fields = ['acquisition_year_after', 'end_year_befor']
+
+
