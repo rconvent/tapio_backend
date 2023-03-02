@@ -8,9 +8,6 @@ from rest_framework.serializers import ModelSerializer
 from tapio.models import *
 
 
-def pprint(*args, **kwargs):
-    # print("\n\n")
-    return print("\n\nDEBUG", *args, end="\n\n", **kwargs)
 class DefaultLoginSerializer(registration_serializers.DefaultLoginSerializer):
     # also support getting the login as "username" or "email" for backward compatibility
     def to_internal_value(self, data):
@@ -45,8 +42,7 @@ class UserSerializer(ModelSerializer):
     profile = UserProfileSerializer(
         many=False, read_only=False, required=False, allow_null=False
     )
-
-    
+   
     class Meta:
         model = get_user_model()
         fields = ["username", "profile"]
@@ -77,19 +73,11 @@ class UnitSerializer(ModelSerializer):
 
 class ModifiedSourceSerializer(ModelSerializer):
 
-    def to_representation(self, value):
-        data = super().to_representation(value)
-        return data
-
-    def to_internal_value(self, data):
-        return super().to_internal_value(data)
-
+    id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
     delta = serializers.SerializerMethodField(required=False)
-
     @extend_schema_field(serializers.JSONField(read_only=False, allow_null=True, required=False))
     def get_delta(self, obj) -> dict:
         return obj.get_delta()
-
 
     class Meta:
         model = ModifiedSource
@@ -103,35 +91,18 @@ class ModifiedSourceSerializer(ModelSerializer):
             "delta"
         ]
 
-
-
-class SourceSimpleSerializer(ModelSerializer):
-
-    class Meta:
-        model = Source
-        fields = [
-            "id",
-            "names",
-            "value",
-            "emission_factor",
-            "total_emission",
-            "lifetime",
-            "acquisition_year",
-        ]
-
-class SourceSerializer(SourceSimpleSerializer):
-    
+class SourceSerializer(ModelSerializer):
     
     def create(self, validated_data):
         modified_sources_data = validated_data.pop('modifiedSources')
         source = Source.objects.create(**validated_data)
         
-        # create modified source if not existing else only link to source
-        for ms in modified_sources_data:
-            if "id" not in ms :
-                ModifiedSource.objects.create(source=source, **ms)
+        # create modified source if not existing else only link to source)
+        for ms_data in modified_sources_data:
+            if not ms_data.get("id") :
+                ms = ModifiedSource.objects.create(source=source, **ms_data)
             else :
-                ms = ModifiedSource.objects.get(ms.get("id"))
+                ms = ModifiedSource.objects.get(id=ms_data.get("id"))
                 if ms.source :
                     raise ValidationError({"Modified Source" : f"Modified Source {ms.id} has already a linked source"})
                 ms.source = source
@@ -141,23 +112,28 @@ class SourceSerializer(SourceSimpleSerializer):
     
     def update(self, instance, validated_data):
         modified_sources_data = validated_data.pop('modifiedSources')
-        serializer = SourceSimpleSerializer(instance, data=validated_data)
-        serializer.is_valid(raise_exception=True)
-        source = serializer.save()
-
+        
         # create modified source if not existing else only link to source
-        for ms in modified_sources_data:
-            pprint()
-            if "id" not in ms :
-                raise ValidationError({"Modified Source" : f"Modified Source Id should be provided in the patch data"})
+        ids_list = []
+        for ms_data in modified_sources_data:
+            if not ms_data.get("id") :
+                ms = ModifiedSource.objects.create(source=instance, **ms_data)
+                ids_list += [ms.id]
             else :
-                ms = ModifiedSource.objects.get(ms.get("id"))
-                if ms.source.id!=source.id :
+                ms = ModifiedSource.objects.get(id=ms_data.get("id"))
+                if ms.source.id!=instance.id :
                     raise ValidationError({"Modified Source" : f"Modified Source {ms.id} has another a linked source"})
                 ms.save()
+                ids_list += [ms.id]
         
-        return source
+        # delete unlinked modified source
+        ModifiedSource.objects.filter(source=instance).exclude(id__in=ids_list).delete()
+        instance.save()
 
+        return instance
+
+
+    id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
     modifiedSources = ModifiedSourceSerializer(many=True, read_only=False, required=False, allow_null=False)
 
     class Meta:
@@ -165,6 +141,7 @@ class SourceSerializer(SourceSimpleSerializer):
         fields = [
             "id",
             "names",
+            "company",
             "value",
             "emission_factor",
             "total_emission",
@@ -176,11 +153,45 @@ class SourceSerializer(SourceSimpleSerializer):
 
 
 class ReportSerializer(ModelSerializer):
+
+    def create(self, validated_data):
+        sources_data = validated_data.pop('sources')
+        report = Report.objects.create(**validated_data)
+        
+        for s_data in sources_data:
+            if not s_data.get("id") :
+                s = Source.objects.create(**s_data)
+            else :
+                s = Source.objects.get(id=s_data.get("id"))
+            report.sources.add(s)
+        
+        return report
+    
+    def update(self, instance, validated_data):
+        sources_data = validated_data.pop('sources')
+        
+        instance.sources.clear()
+        for s_data in sources_data:
+            if not s_data.get("id"):
+                s = Source.objects.create(**s_data)
+            else :
+                s = Source.objects.get(id=s_data.get("id"))    
+            instance.sources.add(s)
+    
+        instance.save()
+
+        return instance
+    
+    sources = SourceSerializer(many=True, read_only=False, required=False, allow_null=False)
     
     class Meta:
         model = Report
-        fields = '__all__'
-
+        fields = [
+            "id",
+            "names", 
+            "date",
+            "sources"
+        ]
 
 
         

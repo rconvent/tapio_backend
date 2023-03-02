@@ -10,10 +10,6 @@ from tapio.models.company import Company
 from tapio.models.unit import Unit
 
 
-def pprint(*args, **kwargs):
-    # print("\n\n")
-    return print("\n\nDEBUG", *args, end="\n\n", **kwargs)
-
 class Source(mixin.ModelSignals, models.Model):
     """    
     An Emission is every source that generates GreenHouse gases (GHG).    
