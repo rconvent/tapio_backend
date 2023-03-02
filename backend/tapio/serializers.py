@@ -94,7 +94,7 @@ class ModifiedSourceSerializer(ModelSerializer):
 class SourceSerializer(ModelSerializer):
     
     def create(self, validated_data):
-        modified_sources_data = validated_data.pop('modifiedSources')
+        modified_sources_data = validated_data.pop('modifiedSources', [])
         source = Source.objects.create(**validated_data)
         
         # create modified source if not existing else only link to source)
@@ -111,7 +111,7 @@ class SourceSerializer(ModelSerializer):
         return source
     
     def update(self, instance, validated_data):
-        modified_sources_data = validated_data.pop('modifiedSources')
+        modified_sources_data = validated_data.pop('modifiedSources', [])
         
         # create modified source if not existing else only link to source
         ids_list = []
@@ -155,7 +155,7 @@ class SourceSerializer(ModelSerializer):
 class ReportSerializer(ModelSerializer):
 
     def create(self, validated_data):
-        sources_data = validated_data.pop('sources')
+        sources_data = validated_data.pop('sources', [])
         report = Report.objects.create(**validated_data)
         
         for s_data in sources_data:
@@ -168,7 +168,7 @@ class ReportSerializer(ModelSerializer):
         return report
     
     def update(self, instance, validated_data):
-        sources_data = validated_data.pop('sources')
+        sources_data = validated_data.pop('sources', [])
         
         instance.sources.clear()
         for s_data in sources_data:
