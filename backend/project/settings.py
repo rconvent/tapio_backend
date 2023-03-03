@@ -123,6 +123,8 @@ LOGOUT_URL = 'rest_registration:logout'
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+FIXTURE_DIRS = ["/tapio/fixtures"]
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

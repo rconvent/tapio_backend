@@ -1,0 +1,35 @@
+[
+    {
+        "model": "tapio.unit",
+        "pk": 1,
+        "fields": {
+            "name": "piece",
+            "names": {
+                "fr": "pièce",
+                "en": "piec"
+            }
+        }
+    },
+    {
+        "model": "tapio.unit",
+        "pk": 2,
+        "fields": {
+            "name": "kWh",
+            "names": {
+                "fr": "Kilowattheure",
+                "en": "Kilowatt-hour"
+            }
+        }
+    },
+    {
+        "model": "tapio.unit",
+        "pk": 3,
+        "fields": {
+            "name": "km",
+            "names": {
+                "fr": "Kilomètre",
+                "en": "Kilometer"
+            }
+        }
+    }
+]

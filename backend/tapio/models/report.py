@@ -12,6 +12,7 @@ class Report(models.Model):
     """   
     names = models.JSONField(default=dict, editable=True, blank=True, help_text=_("names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}"))
     date = models.DateField()
+    year =  models.PositiveSmallIntegerField(blank=True, null=True, help_text=_("Carbon footprint report year"))
     sources = models.ManyToManyField(Source, blank=True, related_name="reports")    
     scenarios = models.JSONField(
         default=dict, 

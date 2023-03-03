@@ -1,0 +1,60 @@
+[
+    {
+        "model": "tapio.source",
+        "pk": 1,
+        "fields": {
+            "names": {
+                "fr": "Coffee Machine"
+            },
+            "company": 1,
+            "unit": 1,
+            "value": 1.0,
+            "emission_factor": 100.0,
+            "lifetime": 3,
+            "acquisition_year": 2020
+        }
+    },
+    {
+        "model": "tapio.source",
+        "pk": 2,
+        "fields": {
+            "names": {
+                "fr": "Diesel Car"
+            },
+            "company": 1,
+            "value": 1.0,
+            "unit": 1,
+            "emission_factor": 15000000.0,
+            "lifetime": 5,
+            "acquisition_year": 2020
+        }
+    },
+    {
+        "model": "tapio.source",
+        "pk": 3,
+        "fields": {
+            "names": {
+                "fr": "Employees distance traveled by car"
+            },
+            "company": 1,
+            "value": 100000.0,
+            "unit": 3,
+            "emission_factor": 0.1,
+            "acquisition_year": 2022
+        }
+    },
+    {
+        "model": "tapio.source",
+        "pk": 4,
+        "fields": {
+            "names": {
+                "fr": "Building Heating"
+            },
+            "company": 1,
+            "value": 20000.0,
+            "unit": 3,
+            "emission_factor": 0.3,
+            "acquisition_year": 2022
+        }
+    }
+]

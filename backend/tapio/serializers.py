@@ -218,6 +218,7 @@ class ReportSerializer(ModelSerializer):
             "id",
             "names", 
             "date",
+            "year",
             "scenarios",
             "sources"
         ]

@@ -41,7 +41,7 @@ class ModifiedSource(mixin.ModelSignals, models.Model):
         if (year or 0) < (self.source.acquisition_year or 0 + self.source.lifetime) :
             return self.source.total_emission + self.total_emission
         
-        if (self.source.acquisition_year or 0 + self.source.lifetime) < (year or 9999)  :
+        if (self.source.acquisition_year or 0 + self.source.lifetime) < (year or 2999)  :
             return self.source.total_emission - self.total_emission
         
         return None

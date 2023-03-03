@@ -1,0 +1,30 @@
+[
+    {
+        "model": "tapio.company",
+        "pk": 1,
+        "fields": {
+            "name": "Tapio",
+            "parent": null,
+            "tva_number": null,
+            "phone_number": null,
+            "lft": 1,
+            "rght": 4,
+            "tree_id": 1,
+            "level": 0
+        }
+    },
+    {
+        "model": "tapio.company",
+        "pk": 2,
+        "fields": {
+            "name": "subsidiary",
+            "parent": 1,
+            "tva_number": null,
+            "phone_number": null,
+            "lft": 2,
+            "rght": 3,
+            "tree_id": 1,
+            "level": 1
+        }
+    }
+]
