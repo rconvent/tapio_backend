@@ -13,9 +13,13 @@ class Report(models.Model):
     names = models.JSONField(default=dict, editable=True, blank=True, help_text=_("names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}"))
     date = models.DateField()
     sources = models.ManyToManyField(Source, blank=True, related_name="reports")    
-    # add scenario entries => either a source or a modified source 
-    # ScenarioEntries = 
-    # scenarios = models.JSONField(default=dict)
+    scenarios = models.JSONField(
+        default=dict, 
+        editable=True, 
+        blank=False, 
+        help_text=_("list of modified sources per scenario {scenario_1 : [{'s_id1' : 'ms_id1'}, ..], scenario_2 : [{'s_id1' : 'ms_id2'}, ..]}")
+    )
+
 
     def get_name(self):
         return str(self.names.get("fr", next((name for name in self.names.values()), "NoName")))

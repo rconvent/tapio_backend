@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import rest_registration.api.serializers as registration_serializers
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema_field
@@ -153,7 +155,31 @@ class SourceSerializer(ModelSerializer):
 
 
 class ReportSerializer(ModelSerializer):
+    def to_representation (self, instance):
+        data = super().to_representation(instance)
+        if self.context.get("full", False):
+            return data
 
+        scenarios = data.pop("scenarios", {})
+        sources_list = data.pop("sources", [])
+
+        filled_scenarios = defaultdict(list)
+        for scenario, sources in scenarios.items() :
+            for source in sources :
+                s_id = source.get("scenario_id")
+                ms_id = source.get("modified_scenario_id")
+                
+                s = [e for e in sources_list if e.get("id")==s_id]
+                if s :
+                    s = s[0]
+                    ms = s.pop("modifiedSources", [])
+                    ms = [e for e in ms if e.get("id")==ms_id]
+                    s["modifiedSource"] = ms[0] if ms else {}
+                    filled_scenarios[scenario] += [s] 
+        data["scenarios"] = filled_scenarios
+        
+        return data
+    
     def create(self, validated_data):
         sources_data = validated_data.pop('sources', [])
         report = Report.objects.create(**validated_data)
@@ -169,6 +195,8 @@ class ReportSerializer(ModelSerializer):
     
     def update(self, instance, validated_data):
         sources_data = validated_data.pop('sources', [])
+        instance.names = validated_data.get("names")
+        instance.scenarios = validated_data.get("scenarios")
         
         instance.sources.clear()
         for s_data in sources_data:
@@ -190,6 +218,7 @@ class ReportSerializer(ModelSerializer):
             "id",
             "names", 
             "date",
+            "scenarios",
             "sources"
         ]
 

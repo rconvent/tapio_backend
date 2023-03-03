@@ -33,6 +33,12 @@ class ReportViewSet(ModelViewSet):
     filterset_class = ReportFilter
     search_fields = ["names"]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"full": self.request.GET.get("full", False)})
+        return context
+
+
     @extend_schema(
         parameters=[
             OpenApiParameter("start_year", OpenApiTypes.INT),
