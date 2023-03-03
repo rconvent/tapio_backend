@@ -101,8 +101,6 @@ class SourceViewSet(ModelViewSet):
         date_from = request.query_params.get("acquisition_year_after", 0)
         date_to = request.query_params.get("end_year_befor", 2999)
         
-        print("\n\nDEBUG   : ", type(date_to), type(date_from), end="\n")
-        
         emissions= {}
         for year in range(int(date_from), int(date_to)+1):
 
