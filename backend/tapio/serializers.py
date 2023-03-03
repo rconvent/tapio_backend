@@ -77,9 +77,11 @@ class ModifiedSourceSerializer(ModelSerializer):
 
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
     delta = serializers.SerializerMethodField(required=False)
+    
     @extend_schema_field(serializers.JSONField(read_only=False, allow_null=True, required=False))
     def get_delta(self, obj) -> dict:
-        return obj.get_delta()
+        year = self.context.get("year", None)
+        return obj.get_delta(year=year)
 
     class Meta:
         model = ModifiedSource
@@ -155,6 +157,7 @@ class SourceSerializer(ModelSerializer):
 
 
 class ReportSerializer(ModelSerializer):
+
     def to_representation (self, instance):
         data = super().to_representation(instance)
         if self.context.get("full", False):
@@ -166,17 +169,34 @@ class ReportSerializer(ModelSerializer):
         filled_scenarios = defaultdict(list)
         for scenario, sources in scenarios.items() :
             for source in sources :
+                
                 s_id = source.get("scenario_id")
                 ms_id = source.get("modified_scenario_id")
                 
                 s = [e for e in sources_list if e.get("id")==s_id]
                 if s :
                     s = s[0]
-                    ms = s.pop("modifiedSources", [])
+                    ms = s.get("modifiedSources", [])
                     ms = [e for e in ms if e.get("id")==ms_id]
                     s["modifiedSource"] = ms[0] if ms else {}
-                    filled_scenarios[scenario] += [s] 
-        data["scenarios"] = filled_scenarios
+                    filled_scenarios[scenario] += [
+                        {
+                            "source_id" : s.get("id"),
+                            "names" : s.get("names", {}),
+                            "acquisition_year" : s.get("acquisition_year", None),
+                            "lifetime" : s.get("lifetime", None),
+                            "total_emission" : s.get("total_emission", None),
+                            "delta" : ms[0].get("delta", None) if ms else None,
+                            "modifiedSource" : {
+                                "names" : ms[0].get("names", {}) if ms else {},
+                                "acquisition_year" : ms[0].get("acquisition_year", {}) if ms else None,
+                            }
+                        
+                        }
+                    ]
+                     
+        
+        data["scenarios_summary"] = filled_scenarios
         
         return data
     
@@ -190,12 +210,13 @@ class ReportSerializer(ModelSerializer):
             else :
                 s = Source.objects.get(id=s_data.get("id"))
             report.sources.add(s)
-        
+
         return report
     
     def update(self, instance, validated_data):
         sources_data = validated_data.pop('sources', [])
         instance.names = validated_data.get("names")
+        instance.year = validated_data.get("year")
         instance.scenarios = validated_data.get("scenarios")
         
         instance.sources.clear()
@@ -211,7 +232,8 @@ class ReportSerializer(ModelSerializer):
         return instance
     
     sources = SourceSerializer(many=True, read_only=False, required=False, allow_null=False)
-    
+    scenario_delta = serializers.JSONField(read_only=True, allow_null=False, required=False)
+
     class Meta:
         model = Report
         fields = [
@@ -219,6 +241,7 @@ class ReportSerializer(ModelSerializer):
             "names", 
             "date",
             "year",
+            "scenario_delta",
             "scenarios",
             "sources"
         ]

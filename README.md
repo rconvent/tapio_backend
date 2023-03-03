@@ -1,21 +1,6 @@
-# Idees
+# Tapio
 
-## Should do
-
-- Use Managers
-- use source serializer inside post
-- multi langual hstor field => display user language
-- Assets
-- source type => filter
-- add company and permission on API (can only current company and children)
-  - https://docs.djangoproject.com/en/4.1/topics/auth/default/
-- in project description add user
-
-## Could do
-
-- Add path to company
-
-# Instruction
+## Environment Setup
 
 - Build docker image
   - docker-compose up -d --build
@@ -23,3 +8,11 @@
   - ./helper_connectDocker
   - python manage.py createsuperuser
   - python manage.py migrate
+- The migrations give you an initial load  of sample data that you can play with
+
+## Documentation
+
+- API links : http://localhost:8000/api/
+- API documentation :
+  - http://localhost:8000/api/swagger/
+  - http://localhost:8000/api/redoc/

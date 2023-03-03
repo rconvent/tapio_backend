@@ -30,21 +30,20 @@ class ModifiedSource(mixin.ModelSignals, models.Model):
     
     def get_delta(self, year=None):
         
-        if not self.source.total_emission or not self.total_emission :
+        if self.source.total_emission is None or self.total_emission is None :
             return None
-        
-        # if no lifetime simply return differnce
-        if not self.source.lifetime :
-            return self.source.total_emission - self.total_emission
-
-        # if lifetime check if source is amortized. if not add source emission
-        if (year or 0) < (self.source.acquisition_year or 0 + self.source.lifetime) :
-            return self.source.total_emission + self.total_emission
-        
-        if (self.source.acquisition_year or 0 + self.source.lifetime) < (year or 2999)  :
-            return self.source.total_emission - self.total_emission
-        
-        return None
+        # only return addition when year smaller than acqu. year + liftime else difference by default
+        if year :
+            # don't count modified source if report year less than aquisition (shouldn't append but idk...)
+            if self.acquisition_year and self.acquisition_year > year:
+                return 0
+            elif year < (self.source.acquisition_year or 0) + (self.source.lifetime or 0) :
+                return (self.source.total_emission + self.total_emission) - self.source.total_emission
+            else :
+                return self.total_emission - self.source.total_emission
+        else : 
+            return self.total_emission - self.source.total_emission
+    
 
     @property
     def delta(self):
@@ -69,8 +68,8 @@ class ModifiedSource(mixin.ModelSignals, models.Model):
             self.total_emission /= self.source.lifetime
 
     def post_save(self, *args, **kwargs):
-        # update report of linked source (all this post save update can be done asyncronously with workers like celery)
-        for report in self.source.reports.all():
+        # update source to update report (all this post save update can be done asyncronously with workers like celery)
+        for report in  self.source.reports.all() :
             report.save()
 
 

@@ -20,13 +20,13 @@ class ReportViewSet(ModelViewSet):
     """    
     The Report is the sum of all the emissions. It should be done once a year    
 
-    list:     Retrieve the list of reports.</br>
+    list:     Retrieve the list of reports. User ?full=true to access all informations and not a summary</br>
     retrieve: Retrieve all information about a specific report.</br>
     create:   Create a new report.</br>
     delete:   Remove an existing report.</br>
     update:   Update an report.</br>
     """  
-    queryset = Report.objects.all().prefetch_related("sources")
+    queryset = Report.objects.all().prefetch_related("sources", "sources__modifiedSources")
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -36,6 +36,9 @@ class ReportViewSet(ModelViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({"full": self.request.GET.get("full", False)})
+        # get report year to computed delta on modified source (not for list view)
+        if context.get("view", object).__dict__.get("action", None) != "list" :
+            context.update({"year": self.get_object().year})
         return context
 
 

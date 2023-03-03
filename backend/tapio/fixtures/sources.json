@@ -10,7 +10,7 @@
             "unit": 1,
             "value": 1.0,
             "emission_factor": 100.0,
-            "lifetime": 3,
+            "lifetime": 5,
             "acquisition_year": 2020
         }
     },
@@ -40,7 +40,7 @@
             "value": 100000.0,
             "unit": 3,
             "emission_factor": 0.1,
-            "acquisition_year": 2022
+            "acquisition_year": 2020
         }
     },
     {
@@ -54,7 +54,7 @@
             "value": 20000.0,
             "unit": 3,
             "emission_factor": 0.3,
-            "acquisition_year": 2022
+            "acquisition_year": 2020
         }
     }
 ]

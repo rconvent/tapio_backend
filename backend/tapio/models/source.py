@@ -40,11 +40,11 @@ class Source(mixin.ModelSignals, models.Model):
     def pre_save(self, *args, **kwargs):
         
         request = get_request()
-        # verify that user have rigths 
-        if request:
-            company_id =  request.user.company_id
-            if company_id != self.company.id and company_id not in Company.objects.get(id=company_id).get_descendants().values_list("id", flat=True):
-                raise PermissionDenied({"company": _("must be below user company")}, code="invalid")
+        # verify that user have rigths. remove for now for easier use. CompanyPermission to implement
+        # if request:
+        #     company_id =  request.user.company_id
+        #     if company_id != self.company.id and company_id not in Company.objects.get(id=company_id).get_descendants().values_list("id", flat=True):
+        #         raise PermissionDenied({"company": _("must be below user company")}, code="invalid")
         
         if self.value and self.emission_factor :
             self.total_emission = self.value * self.emission_factor
@@ -56,7 +56,7 @@ class Source(mixin.ModelSignals, models.Model):
         
 
     def post_save(self, *args, **kwargs):
-        # update linked modified source (all this post save update can be done with asyncronously tasks using workers like celery)
+        # update linked modified source (all this post save update could be done with asyncronously tasks using workers like celery)
         for modifiedSource in self.modifiedSources.all() :
             modifiedSource.save()
 
