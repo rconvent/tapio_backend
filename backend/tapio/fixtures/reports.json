@@ -7,51 +7,7 @@
                 "fr": "Annual Carbon Foot Print report : 2022"
             },
             "date": "2023-01-10",
-            "year": 2022,
-            "scenarios": {
-                "scenario_1": [
-                    {
-                        "scenario_id": 1,
-                        "modified_scenario_id": 1
-                    },
-                    {
-                        "scenario_id": 2,
-                        "modified_scenario_id": 2
-                    },
-                    {
-                        "scenario_id": 3,
-                        "modified_scenario_id": 3
-                    },
-                    {
-                        "scenario_id": 4,
-                        "modified_scenario_id": 5
-                    }
-                ],
-                "scenario_2": [
-                    {
-                        "scenario_id": 1,
-                        "modified_scenario_id": 1
-                    },
-                    {
-                        "scenario_id": 2,
-                        "modified_scenario_id": 2
-                    },
-                    {
-                        "scenario_id": 3,
-                        "modified_scenario_id": 4
-                    },
-                    {
-                        "scenario_id": 4,
-                        "modified_scenario_id": 5
-                    }
-                ]
-            },
-            "sources": [
-                1,
-                2,
-                3,
-                4
-            ]
+            "year": 2022
         }
     }
 ]

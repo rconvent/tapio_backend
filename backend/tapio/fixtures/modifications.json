@@ -1,0 +1,74 @@
+[
+    {
+        "model": "tapio.modification",
+        "pk": 1,
+        "fields": {
+            "ratio": 0,
+            "effective_year": 2021,
+            "reduction_stategy": 1
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 2,
+        "fields": {
+            "ratio": 0.8,
+            "effective_year": 2021,
+            "reduction_stategy": 2
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 3,
+        "fields": {
+            "emission_factor": 0.01,
+            "effective_year": 2022,
+            "reduction_stategy": 3
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 5,
+        "fields": {
+            "ratio": 0.8,
+            "effective_year": 2021,
+            "reduction_stategy": 4
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 6,
+        "fields": {
+            "emission_factor": 0.01,
+            "effective_year": 2022,
+            "reduction_stategy": 4
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 7,
+        "fields": {
+            "ratio": 0.9,
+            "effective_year": 2021,
+            "reduction_stategy": 5
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 8,
+        "fields": {
+            "ratio": 0.9,
+            "effective_year": 2022,
+            "reduction_stategy": 5
+        }
+    },
+    {
+        "model": "tapio.modification",
+        "pk": 9,
+        "fields": {
+            "ratio": 0.9,
+            "effective_year": 2023,
+            "reduction_stategy": 5
+        }
+    }
+]

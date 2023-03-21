@@ -1,0 +1,83 @@
+[
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 1,
+            "report": 1,
+            "scenario": "01"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 2,
+            "report": 1,
+            "scenario": "01"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 5,
+            "report": 1,
+            "scenario": "01"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 1,
+            "report": 1,
+            "scenario": "02"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 3,
+            "report": 1,
+            "scenario": "02"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 5,
+            "report": 1,
+            "scenario": "02"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 1,
+            "report": 1,
+            "scenario": "03"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 4,
+            "report": 1,
+            "scenario": "03"
+        }
+    },
+    {
+        "model": "tapio.reportEntry",
+        "pk": 1,
+        "fields": {
+            "reduction_strategy": 5,
+            "report": 1,
+            "scenario": "03"
+        }
+    }
+]

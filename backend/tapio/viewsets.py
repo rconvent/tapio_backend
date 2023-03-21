@@ -1,8 +1,8 @@
 from collections import defaultdict
 
 from django.contrib.auth import get_user_model
-from django.db.models import F, Sum
-from django.db.models.functions import Coalesce
+from django.db.models import F, FloatField, Func, Sum, Value
+from django.db.models.functions import Cast, Coalesce
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -26,26 +26,18 @@ class ReportViewSet(ModelViewSet):
     delete:   Remove an existing report.</br>
     update:   Update an report.</br>
     """  
-    queryset = Report.objects.all().prefetch_related("sources", "sources__modifiedSources")
+    queryset = Report.objects.all().prefetch_related("report_entries")
     serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ReportFilter
     search_fields = ["names"]
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({"full": self.request.GET.get("full", False)})
-        # get report year to computed delta on modified source (not for list view)
-        if context.get("view", object).__dict__.get("action", None) != "list" :
-            context.update({"year": self.get_object().year})
-        return context
-
-
     @extend_schema(
         parameters=[
             OpenApiParameter("start_year", OpenApiTypes.INT),
             OpenApiParameter("end_year", OpenApiTypes.INT),
+            OpenApiParameter("scenario", OpenApiTypes.STR),
         ]
     )
     @action(methods=["get"], detail=False, url_path="years_emission")
@@ -53,19 +45,49 @@ class ReportViewSet(ModelViewSet):
         
         start_year = request.query_params.get("start_year", 2999)
         end_year = request.query_params.get("end_year", 1900)
+        scenario = request.query_params.get("scenario", 1900)
 
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(date__year__gte=start_year, date__year__lte=end_year)
+        queryset = queryset.filter(year__gte=start_year, year__lte=end_year)
         queryset = queryset.annotate(
-            source_emissions = Sum(Coalesce(F("sources__total_emission"), 0.0))
+            source_emissions = Coalesce(
+                Cast(
+                    Func(F(f"deltas"), Value(scenario), Value("initial"), function="jsonb_extract_path_text"),
+                    FloatField(),
+                ),   
+                0.0
+            )
         )
-
         emissions = defaultdict(int)
         for item in queryset.values("date__year", "source_emissions"):
             emissions[item.get("date__year", 0)] += item.get("source_emissions")
         
         return Response(emissions)
 
+class ReductionStrategyViewSet(ModelViewSet):
+    """    
+    An Emission is every source that generates GreenHouse gases (GHG).    
+    It could be defined as source x emission_factor = total  
+     
+    list:     Retrieve the list of sources.</br>
+    retrieve: Retrieve all information about a specific source.</br>
+    create:   Create a new source.</br>
+    delete:   Remove an existing source.</br>
+    update:   Update an source.</br>
+    """  
+    
+    queryset = ReportEntry.objects.all().prefetch_related("source", "modified_source")
+    serializer_class = ReportEntrySerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"full": self.request.GET.get("full", False)})
+
+        # get report year to computed delta on modified source (not for list view)
+        if context.get("view", object).__dict__.get("action", None) not in ("list", "create") :
+            context.update({"year": self.get_object().report.year})
+        return context
 
 
 class SourceViewSet(ModelViewSet):
@@ -80,7 +102,7 @@ class SourceViewSet(ModelViewSet):
     update:   Update an source.</br>
     """  
     
-    queryset = Source.objects.all().prefetch_related("modifiedSources")
+    queryset = Source.objects.all().prefetch_related("modifications")
     serializer_class = SourceSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -91,10 +113,10 @@ class SourceViewSet(ModelViewSet):
     @action(methods=["get"], detail=False, url_path="years_emission")
     def get_years_emission(self, request, *args, **kwargs):
         
-        
         queryset = self.filter_queryset(self.get_queryset())
+        print(queryset.count())
         queryset = queryset.annotate(
-            source_emissions = Sum(Coalesce(F("total_emission"), 0.0))
+            source_emissions = Coalesce(F("total_emission"), 0.0)
         )
 
         items_list = list(queryset.values("acquisition_year", "lifetime", "total_emission"))
@@ -103,30 +125,12 @@ class SourceViewSet(ModelViewSet):
         
         emissions= {}
         for year in range(int(date_from), int(date_to)+1):
-
             emissions[year] = sum(
-                item.get("total_emission", 0) for item in items_list  if item.get("acquisition_year", 2999) <= year <=item.get("acquisition_year", 0)+(item.get("lifetime") or 0)
+                item.get("total_emission", 0) for item in items_list  if item.get("acquisition_year", 0) <= year <=item.get("acquisition_year", 2999)+(item.get("lifetime") or 0)
             )
         
         return Response(emissions)
     
-
-class ModifiedSourceViewSet(ModelViewSet):
-    """    
-    An Emission is every source that generates GreenHouse gases (GHG).    
-    It could be defined as source x emission_factor = total  
-     
-    list:     Retrieve the list of sources.</br>
-    retrieve: Retrieve all information about a specific source.</br>
-    create:   Create a new source.</br>
-    delete:   Remove an existing source.</br>
-    update:   Update an source.</br>
-    """  
-    
-    queryset = ModifiedSource.objects.all()
-    serializer_class = ModifiedSourceSerializer
-    permission_classes = [IsAuthenticated]
-
 
 class ProfileViewSet(ModelViewSet):
     """    
@@ -154,7 +158,6 @@ class UnitViewSet(ModelViewSet):
     """  
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
-
 
 class CompanyViewSet(ModelViewSet):
     """    

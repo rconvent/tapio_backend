@@ -6,7 +6,6 @@ from django.utils.translation import gettext as _
 from django_middleware_global_request import get_request
 from project import mixin
 from rest_framework.exceptions import PermissionDenied
-from tapio.models.company import Company
 from tapio.models.unit import Unit
 
 
@@ -18,7 +17,7 @@ class Source(mixin.ModelSignals, models.Model):
     
     names = models.JSONField(default=dict, editable=True, blank=True, help_text=_("names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}"))
     company = models.ForeignKey(
-        Company, related_name="sources", null=False, on_delete=models.CASCADE, db_index=True, help_text="Company to which this source belong to"
+        "Company", related_name="sources", null=False, on_delete=models.CASCADE, db_index=True, help_text="Company to which this source belong to"
     )
     description = models.CharField(max_length=250, blank=True, null=True)    
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True, blank=False, db_index=True, related_name="sources")
@@ -30,6 +29,16 @@ class Source(mixin.ModelSignals, models.Model):
     lifetime = models.PositiveIntegerField(blank=True, null=True)    
     acquisition_year = models.PositiveSmallIntegerField(blank=True, null=True)
 
+    def get_total_emission(self, year=None):
+        if not year or not self.acquisition_year :
+            return self.total_emission
+        else :
+            if year < self.acquisition_year or year > self.acquisition_year + (self.lifetime or 0) :
+                return 0
+            else :
+                return self.total_emission
+
+
     @property
     def get_name(self):
         return str(self.names.get("fr", next((name for name in self.names.values()), "NoName")))
@@ -38,13 +47,6 @@ class Source(mixin.ModelSignals, models.Model):
         return f"{self.get_name} ({self.id})"
 
     def pre_save(self, *args, **kwargs):
-        
-        request = get_request()
-        # verify that user have rigths. remove for now for easier use. CompanyPermission to implement
-        # if request:
-        #     company_id =  request.user.company_id
-        #     if company_id != self.company.id and company_id not in Company.objects.get(id=company_id).get_descendants().values_list("id", flat=True):
-        #         raise PermissionDenied({"company": _("must be below user company")}, code="invalid")
         
         if self.value and self.emission_factor :
             self.total_emission = self.value * self.emission_factor
@@ -56,9 +58,6 @@ class Source(mixin.ModelSignals, models.Model):
         
 
     def post_save(self, *args, **kwargs):
-        # update linked modified source (all this post save update could be done with asyncronously tasks using workers like celery)
-        for modifiedSource in self.modifiedSources.all() :
-            modifiedSource.save()
-
+        pass
 
 

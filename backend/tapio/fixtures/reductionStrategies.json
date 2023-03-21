@@ -1,0 +1,52 @@
+[
+    {
+        "model": "tapio.reductionStrategy",
+        "pk": 1,
+        "fields": {
+            "names": {
+                "fr": "Buy Second Hand Coffe Machine (ratio 0)"
+            },
+            "source": 1
+        }
+    },
+    {
+        "model": "tapio.reductionStrategy",
+        "pk": 2,
+        "fields": {
+            "names": {
+                "fr": "Reduce Employee distance traveled By car (0.8)"
+            },
+            "source": 2
+        }
+    },
+    {
+        "model": "tapio.reductionStrategy",
+        "pk": 3,
+        "fields": {
+            "names": {
+                "fr": "Use electric distance traveled by car (EF = 0.01)"
+            },
+            "source": 2
+        }
+    },
+    {
+        "model": "tapio.reductionStrategy",
+        "pk": 4,
+        "fields": {
+            "names": {
+                "fr": "Reduce Employee distance traveled By car and yse electric (EF = 0.01)"
+            },
+            "source": 2
+        }
+    },
+    {
+        "model": "tapio.reductionStrategy",
+        "pk": 5,
+        "fields": {
+            "names": {
+                "fr": "Reduce building Heating (10% each year)"
+            },
+            "source": 2
+        }
+    }
+]

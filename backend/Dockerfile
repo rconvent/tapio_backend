@@ -51,6 +51,7 @@ RUN apk add --no-cache --virtual .build-deps \
     subversion
 
 COPY ./pyproject.toml ${HOME}/app/pyproject.toml
+COPY ./poetry.toml ${HOME}/app/poetry.toml
 COPY ./poetry.lock ${HOME}/app/poetry.lock
 
 # install poetry and requirements

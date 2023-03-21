@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+SECRET_KEY = 'django-insecure-6!4y%movla1^#34!#&^jd!htt9hhw4qxzwqorxzu-349e=m80('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get("DEBUG", default=0))
@@ -36,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'django_extensions',
+    'django_filters',
     'rest_framework',
     "rest_framework.authtoken",
     'rest_framework_swagger',
@@ -143,6 +146,16 @@ DATABASES = {
         "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
+
+DEFAULT_POSTGRESQL_ENGINES = (
+    'django.db.backends.postgresql',
+    'django.db.backends.postgresql_psycopg2',
+    'django.db.backends.postgis',
+    'django.contrib.gis.db.backends.postgis',
+    'psqlextra.backend',
+    'django_zero_downtime_migrations.backends.postgres',
+    'django_zero_downtime_migrations.backends.postgis',
+)
 
 LOGGING = {
     "version": 1,
