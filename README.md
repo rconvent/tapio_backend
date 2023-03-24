@@ -1,16 +1,6 @@
 # Tapio
 
-## To do
-
-* [X] Tests  One by specs !!! :
-
-  * [X] Model test
-  * [ ] still API to test
-* [ ] Add silk to inspect queries
-
-
-
-## Environment Setup
+# Environment Setup
 
 - Build docker image
   - `docker-compose up -d --build`
