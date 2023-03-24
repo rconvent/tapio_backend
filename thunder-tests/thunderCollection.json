@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "colName": "Tapio",
+    "created": "2023-02-28T08:54:46.031Z",
+    "sortNum": 2500,
+    "folders": [],
+    "settings": {
+      "headers": [
+        {
+          "name": "X-XSRF-TOKEN",
+          "value": "{{XSRF-TOKEN | urlDecode}}"
+        }
+      ],
+      "tests": []
+    }
+  }
+]

@@ -10,7 +10,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 2,
         "fields": {
             "reduction_strategy": 2,
             "report": 1,
@@ -19,7 +19,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 3,
         "fields": {
             "reduction_strategy": 5,
             "report": 1,
@@ -28,7 +28,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 4,
         "fields": {
             "reduction_strategy": 1,
             "report": 1,
@@ -37,7 +37,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 5,
         "fields": {
             "reduction_strategy": 3,
             "report": 1,
@@ -46,7 +46,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 6,
         "fields": {
             "reduction_strategy": 5,
             "report": 1,
@@ -55,7 +55,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 7,
         "fields": {
             "reduction_strategy": 1,
             "report": 1,
@@ -64,7 +64,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 8,
         "fields": {
             "reduction_strategy": 4,
             "report": 1,
@@ -73,7 +73,7 @@
     },
     {
         "model": "tapio.reportEntry",
-        "pk": 1,
+        "pk": 9,
         "fields": {
             "reduction_strategy": 5,
             "report": 1,

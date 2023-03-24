@@ -76,18 +76,6 @@ class UnitSerializer(ModelSerializer):
 class ModificationSerializer(ModelSerializer):
 
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
-    delta = serializers.SerializerMethodField(required=False)
-    total_emission = serializers.SerializerMethodField(required=False)
-    
-    @extend_schema_field(serializers.JSONField(read_only=False, allow_null=True, required=False))
-    def get_delta(self, obj) -> dict:
-        year = self.context.get("year", None)
-        return obj.get_delta(year=year)
-    
-    @extend_schema_field(serializers.JSONField(read_only=False, allow_null=True, required=False))
-    def get_total_emission(self, obj) -> dict:
-        year = self.context.get("year", None)
-        return obj.get_total_emission(year=year)
 
     class Meta:
         model = Modification
@@ -100,46 +88,6 @@ class ModificationSerializer(ModelSerializer):
 
 class SourceSerializer(ModelSerializer):
     
-    # def create(self, validated_data):
-    #     modified_sources_data = validated_data.pop('Modifications', [])
-    #     source = Source.objects.create(**validated_data)
-        
-    #     # create modified source if not existing else only link to source)
-    #     for ms_data in modified_sources_data:
-    #         if not ms_data.get("id") :
-    #             ms = Modification.objects.create(source=source, **ms_data)
-    #         else :
-    #             ms = Modification.objects.get(id=ms_data.get("id"))
-    #             if ms.source :
-    #                 raise ValidationError({"Modified Source" : f"Modified Source {ms.id} has already a linked source"})
-    #             ms.source = source
-    #             ms.save()
-
-    #     return source
-    
-    # def update(self, instance, validated_data):
-    #     modified_sources_data = validated_data.pop('Modifications', [])
-        
-    #     # create modified source if not existing else only link to source
-    #     ids_list = []
-    #     for ms_data in modified_sources_data:
-    #         if not ms_data.get("id") :
-    #             ms = Modification.objects.create(source=instance, **ms_data)
-    #             ids_list += [ms.id]
-    #         else :
-    #             ms = Modification.objects.get(id=ms_data.get("id"))
-    #             if ms.source.id!=instance.id :
-    #                 raise ValidationError({"Modified Source" : f"Modified Source {ms.id} has another a linked source"})
-    #             ms.save()
-    #             ids_list += [ms.id]
-        
-    #     # delete unlinked modified source
-    #     Modification.objects.filter(source=instance).exclude(id__in=ids_list).delete()
-    #     instance.save()
-
-    #     return instance
-
-
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
 
     class Meta:
@@ -155,70 +103,158 @@ class SourceSerializer(ModelSerializer):
             "acquisition_year",
         ]
 
-class ReportEntrySerializer(ModelSerializer):
+class ReductionStrategySerializer(ModelSerializer):
     
-    # def create(self, validated_data):
-        # modified_source_data = validated_data.pop('modified_source', [])
-        # re = ReportEntry.objects.create(**validated_data)
+    def create(self, validated_data):
         
-        # # create modified source if not existing else only link to source)
-        # if not modified_source_data.get("id") :
-        #     ms = Modification.objects.create(source=source, **ms_data)
-        # else :
-        #     ms = Modification.objects.get(id=modified_source_data.get("id"))
-        #     if ms.source :
-        #         raise ValidationError({"Modified Source" : f"Modified Source {ms.id} has already a linked source"})
-        #     ms.source = source
-        #     ms.save()
+        source_data = validated_data.pop('source')
+        modifications_data = validated_data.pop('modifications', [])
+        
+        # create source if not existing
+        if not source_data.get("id") :
+            source = Source.objects.create(**source_data)
+        else :
+            source = Source.objects.get(id=source_data.get("id"))
+        reduction_strategy = ReductionStrategy.objects.create(**validated_data, source=source)
 
-        # return source
+        # create each modification 
+        for modif_data in modifications_data:
+            Modification.objects.create(reduction_strategy=reduction_strategy, **modif_data)
+
+        reduction_strategy.save()
+
+        return reduction_strategy
+    
+    def update(self, instance, validated_data):
+        
+        modifications_data = validated_data.pop('modifications', [])
+        instance.names = validated_data.get("names")
+
+        # create modifications if not
+        ids_list = []
+        for modif_data in modifications_data:
+            if not modif_data.get("id") :
+                modification = Modification.objects.create(reduction_strategy=instance, **modif_data)
+                ids_list += [modification.id]
+            else :
+                modification = Modification.objects.get(id=modif_data.get("id"))
+                # copy modifications if already linked to another reduction strategy
+                if modification.reduction_strategy.id!=instance.id :
+                    modification.id = None
+                    modification.reduction_strategy = instance
+                    modification.save()
+                ids_list += [modification.id]
+        
+        # delete unlinked modified source
+        Modification.objects.filter(reduction_strategy=instance).exclude(id__in=ids_list).delete()
+        instance.save()
+
+        return instance
 
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
-    source = SourceSerializer(read_only=False, required=False, allow_null=False)
+    source = SourceSerializer(read_only=False, required=True, allow_null=False)
+    modifications = ModificationSerializer(many=True, read_only=False, required=False, allow_null=False)
+    delta = serializers.SerializerMethodField(required=False)
+    total_emission = serializers.SerializerMethodField(required=False)
+    
+    @extend_schema_field(serializers.JSONField(read_only=True, allow_null=True, required=False))
+    def get_delta(self, obj) -> dict:
+        year = self.context.get("year", None)
+        if year :
+            year = int(year)
+        return obj.get_delta(year=year)
+    
+    @extend_schema_field(serializers.JSONField(read_only=True, allow_null=True, required=False))
+    def get_total_emission(self, obj) -> dict:
+        year = self.context.get("year", None)
+        if year :
+            year = int(year)
+        return obj.get_total_emission(year=year)
+    
+    class Meta:
+        model = ReductionStrategy
+        fields = [
+            "id",
+            "names",
+            "source",
+            "modifications",
+            "delta",
+            "total_emission"
+        ]
+
+
+class ReportEntrySerializer(ModelSerializer):
+    
+    id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
+    reduction_strategy_id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
     
     class Meta:
         model = ReportEntry
         fields = [
             "id",
-            "source",
+            "reduction_strategy_id",
             "scenario",
-            "report"
+            "delta",
+            "total_emission"
+        ]
+
+class ReportSimpleSerializer(ModelSerializer):
+    
+    id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
+    
+    class Meta:
+        model = Report
+        fields = [
+            "id",
+            "names", 
+            "date",
+            "year",
+            "deltas"
         ]
 
 class ReportSerializer(ModelSerializer):
-    
-    # def create(self, validated_data):
-    #     sources_data = validated_data.pop('sources', [])
-    #     report = Report.objects.create(**validated_data)
+
+    def create(self, validated_data):
+        report_entries_data = validated_data.pop('report_entries', [])
+        report = Report.objects.create(**validated_data)
         
-    #     for s_data in sources_data:
-    #         if not s_data.get("id") :
-    #             s = Source.objects.create(**s_data)
-    #         else :
-    #             s = Source.objects.get(id=s_data.get("id"))
-    #         report.sources.add(s)
+        for re_data in report_entries_data :
+            ReportEntry.objects.create(**re_data, report=report)
+            
+        report.save()
 
-    #     return report
+        return report
     
-    # def update(self, instance, validated_data):
-    #     sources_data = validated_data.pop('sources', [])
-    #     instance.names = validated_data.get("names")
-    #     instance.year = validated_data.get("year")
-    #     instance.scenarios = validated_data.get("scenarios")
+    def update(self, instance, validated_data):
+        report_entries_data = validated_data.pop('report_entries', [])
+        instance.names = validated_data.get("names")
+        instance.year = validated_data.get("year")
+        instance.date = validated_data.get("date")
+
+        # create modifications if not
+        ids_list = []
+        for re_data in report_entries_data:
+            if not re_data.get("id") :
+                report_entry = ReportEntry.objects.create(report=instance, **re_data)
+                ids_list += [report_entry.id]
+            else :
+                report_entry = ReportEntry.objects.get(id=re_data.get("id"))
+                # copy report entry if already linked to another report 
+                if report_entry.report.id!=instance.id :
+                    report_entry.id = None
+                    report_entry.report = instance
+                    report_entry.save()
+                ids_list += [report_entry.id]
         
-    #     instance.sources.clear()
-    #     for s_data in sources_data:
-    #         if not s_data.get("id"):
-    #             s = Source.objects.create(**s_data)
-    #         else :
-    #             s = Source.objects.get(id=s_data.get("id"))    
-    #         instance.sources.add(s)
+        # delete unlinked modified source
+        ReportEntry.objects.filter(report=instance).exclude(id__in=ids_list).delete()
+        instance.save()
+
+        return instance
+
     
-    #     instance.save()
-
-    #     return instance
-
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
+    report_entries = ReportEntrySerializer(many=True, read_only=False, required=False, allow_null=False)
     
     class Meta:
         model = Report

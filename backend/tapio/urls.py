@@ -4,7 +4,8 @@ from tapio.viewsets import *
 
 router = DefaultRouter()
 router.register(r"report", ReportViewSet)
-router.register(r"reportEntry", ReductionStrategyViewSet)
+router.register(r"report_entry", ReportEntryViewSet)
+router.register(r"reduction_strategy", ReductionStrategyViewSet)
 router.register(r"source", SourceViewSet)
 router.register(r"company", CompanyViewSet)
 router.register(r"unit", UnitViewSet)

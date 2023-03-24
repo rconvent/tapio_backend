@@ -1,0 +1,140 @@
+[
+  {
+    "_id": "7edd540a-6912-4968-b5f2-6190bb91ae79",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Source",
+    "url": "http://localhost:8000/api/source/1/",
+    "method": "PATCH",
+    "sortNum": 10000,
+    "created": "2023-02-28T13:36:10.982Z",
+    "modified": "2023-03-24T10:17:30.653Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"names\": {\n        \"fr\": \"Test Machine\"\n    },\n    \"company\": 1,\n    \"value\": 1.0,\n    \"emission_factor\": 100.0,\n    \"total_emission\": 20.0,\n    \"lifetime\": 5,\n    \"acquisition_year\": 2020\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "6fdf0365-991c-4351-b086-7d0d7bfd19ec",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Login",
+    "url": "http://localhost:8000/auth/login/",
+    "method": "POST",
+    "sortNum": 5000,
+    "created": "2023-02-28T15:39:54.988Z",
+    "modified": "2023-02-28T16:23:38.421Z",
+    "headers": [
+      {
+        "name": "Set-Cookie",
+        "value": "{{set-cookie}}"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"tapio1234\"\n}\n",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "c9284615-0261-43fd-ae2f-73d96873b590",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Report",
+    "url": "http://localhost:8000/api/report/1/",
+    "method": "PATCH",
+    "sortNum": 15000,
+    "created": "2023-03-02T15:22:27.063Z",
+    "modified": "2023-03-24T12:34:30.245Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"id\": 1 ,\n  \"names\": {\n      \"fr\": \"Annual Carbon Foot Print report: 2022\"\n  },\n  \"date\": \"2023-01-10\",\n  \"year\": 2021\n}\n",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "f192e429-a151-487b-b1ef-439be1540100",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Reduction Strategy",
+    "url": "http://localhost:8000/api/reduction_strategy/1/",
+    "method": "PATCH",
+    "sortNum": 10000,
+    "created": "2023-03-24T09:45:06.449Z",
+    "modified": "2023-03-24T10:00:40.198Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"id\": 1,\n  \"names\": {\n    \"fr\": \"Buy Second Hand Coffe Machine (ratio 0)\"\n  },\n  \"source\": {\n    \"id\": 1,\n    \"names\": {\n      \"fr\": \"Coffee Machine\"\n    },\n    \"company\": 1,\n    \"value\": 1.0,\n    \"emission_factor\": 100.0,\n    \"total_emission\": 20.0,\n    \"lifetime\": 5,\n    \"acquisition_year\": 2020\n  },\n  \"modifications\": [\n    {\n      \"id\": 12,\n      \"ratio\": 0.0,\n      \"emission_factor\": null,\n      \"effective_year\": 2021\n    }\n  ]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "161da0c8-5839-4bc3-bf29-37da28cb1e03",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Reduction Strategy",
+    "url": "http://localhost:8000/api/reduction_strategy/",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-03-24T09:48:00.257Z",
+    "modified": "2023-03-24T09:58:09.373Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"names\": {\n    \"fr\": \"Buy Second Hand Coffe Machine (ratio 0)\"\n  },\n  \"source\": {\n    \"names\": {\n      \"fr\": \"Coffee Machine\"\n    },\n    \"company\": 1,\n    \"value\": 1.0,\n    \"emission_factor\": 100.0,\n    \"total_emission\": 20.0,\n    \"lifetime\": 5,\n    \"acquisition_year\": 2020\n  },\n  \"modifications\": [\n    {\n      \"ratio\": 0.0,\n      \"emission_factor\": null,\n      \"effective_year\": 2021\n    }\n  ]\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "9bf25958-a1ee-4b58-bf7f-911d4bf7541d",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Source",
+    "url": "http://localhost:8000/api/source/",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-03-24T10:17:58.894Z",
+    "modified": "2023-03-24T12:34:33.347Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"names\": {\n    \"fr\": \"Test Machine\"\n  },\n  \"company\": 1,\n  \"value\": 1.0,\n  \"emission_factor\": 100.0,\n  \"total_emission\": 20.0\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "ac55da1c-83c7-4036-962a-95d4180bf14f",
+    "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
+    "containerId": "",
+    "name": "Report",
+    "url": "http://localhost:8000/api/report/",
+    "method": "POST",
+    "sortNum": 20000,
+    "created": "2023-03-24T10:18:36.260Z",
+    "modified": "2023-03-24T10:43:01.597Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"names\": {\n    \"fr\": \"Annual Carbon Foot Print report: 2024\"\n  },\n  \"date\": \"2025-01-10\",\n  \"year\": 2024,\n  \"report_entries\": [\n    {\n      \"reduction_strategy\": {\n        \"id\": 1,\n        \"names\": {\n          \"fr\": \"Buy Second Hand Coffe Machine (ratio 0)\"\n        },\n        \"source\": {\n          \"id\": 1,\n          \"names\": {\n            \"fr\": \"Test Machine\"\n          },\n          \"company\": 1,\n          \"value\": 1.0,\n          \"emission_factor\": 100.0,\n          \"total_emission\": 20.0,\n          \"lifetime\": 5,\n          \"acquisition_year\": 2020\n        },\n        \"modifications\": [\n          {\n            \"id\": 12,\n            \"ratio\": 0.0,\n            \"emission_factor\": null,\n            \"effective_year\": 2021\n          }\n        ]\n      },\n      \"scenario\": \"01\"\n    },\n    {\n      \"reduction_strategy_id\": 2,\n      \"scenario\": \"01\"\n    },\n    {\n      \"reduction_strategy_id\": 5,\n      \"scenario\": \"01\"\n    },\n    {\n      \"reduction_strategy_id\": 1,\n      \"scenario\": \"02\"\n    },\n    {\n      \"reduction_strategy_id\": 3,\n      \"scenario\": \"02\"\n    },\n    {\n      \"reduction_strategy_id\": 2,\n      \"scenario\": \"02\"\n    },\n    {\n      \"reduction_strategy_id\": 1,\n      \"scenario\": \"03\"\n    },\n    {\n      \"reduction_strategy_id\": 4,\n      \"scenario\": \"03\"\n    },\n    {\n      \"reduction_strategy_id\": 5,\n      \"scenario\": \"03\"\n    }\n  ]\n}",
+      "form": []
+    },
+    "tests": []
+  }
+]

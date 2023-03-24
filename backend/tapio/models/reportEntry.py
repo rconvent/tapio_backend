@@ -9,12 +9,15 @@ from project import mixin
 
 class ReportEntry(mixin.ModelSignals, models.Model):
     """    
-    A report entry is a reduction_strategy of a scenario of a report.    
+    A report entry is a reduction_strategy in a scenario of a report.   
     """    
 
     reduction_strategy = models.ForeignKey("ReductionStrategy", on_delete=models.SET_NULL, null=True, db_index=True, related_name="report_entries", help_text="modfied source of this entry")
     report = models.ForeignKey("Report", on_delete=models.CASCADE, null=False, db_index=True, related_name="report_entries", help_text="Report link sof this entry")
-    scenario = models.CharField(default="00", max_length=2, editable=True, help_text="scenario of this entry : 01, 02, ...")
+    scenario = models.CharField(default="00", max_length=10, editable=True, help_text="scenario of this entry : 01, 02, ...")
+
+    class Meta:
+        unique_together = ('reduction_strategy', 'scenario', 'report')
 
     @property
     def total_emission(self):

@@ -5,7 +5,7 @@
         "fields": {
             "ratio": 0,
             "effective_year": 2021,
-            "reduction_stategy": 1
+            "reduction_strategy": 1
         }
     },
     {
@@ -14,7 +14,7 @@
         "fields": {
             "ratio": 0.8,
             "effective_year": 2021,
-            "reduction_stategy": 2
+            "reduction_strategy": 2
         }
     },
     {
@@ -23,7 +23,7 @@
         "fields": {
             "emission_factor": 0.01,
             "effective_year": 2022,
-            "reduction_stategy": 3
+            "reduction_strategy": 3
         }
     },
     {
@@ -32,7 +32,7 @@
         "fields": {
             "ratio": 0.8,
             "effective_year": 2021,
-            "reduction_stategy": 4
+            "reduction_strategy": 4
         }
     },
     {
@@ -41,7 +41,7 @@
         "fields": {
             "emission_factor": 0.01,
             "effective_year": 2022,
-            "reduction_stategy": 4
+            "reduction_strategy": 4
         }
     },
     {
@@ -50,7 +50,7 @@
         "fields": {
             "ratio": 0.9,
             "effective_year": 2021,
-            "reduction_stategy": 5
+            "reduction_strategy": 5
         }
     },
     {
@@ -59,7 +59,7 @@
         "fields": {
             "ratio": 0.9,
             "effective_year": 2022,
-            "reduction_stategy": 5
+            "reduction_strategy": 5
         }
     },
     {
@@ -68,7 +68,7 @@
         "fields": {
             "ratio": 0.9,
             "effective_year": 2023,
-            "reduction_stategy": 5
+            "reduction_strategy": 5
         }
     }
 ]

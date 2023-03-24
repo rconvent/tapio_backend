@@ -60,35 +60,19 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='ModifiedSource',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('names', models.JSONField(blank=True, default=dict, help_text="names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}")),
-                ('description', models.CharField(blank=True, max_length=250, null=True)),
-                ('ratio', models.FloatField(blank=True, default=1, help_text='Ratio to apply to the original source')),
-                ('emission_factor', models.FloatField(blank=True, help_text='local emission of the modified source (if different than origianl) in Unit/kgCO2e', null=True)),
-                ('acquisition_year', models.PositiveSmallIntegerField(blank=True, null=True)),
-                ('parent', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='child', to='tapio.modifiedsource')),
-            ],
-            bases=(project.mixin.ModelSignals, models.Model),
-        ),
-        migrations.CreateModel(
-            name='Report',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('names', models.JSONField(blank=True, default=dict, help_text="names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}")),
-                ('date', models.DateField()),
-                ('year', models.PositiveSmallIntegerField(blank=True, help_text='Carbon footprint report year', null=True)),
-                ('deltas', models.JSONField(default=dict, editable=False, help_text="delta and total emission by scenarios {'1' : {'initial' = 100, 'modified' = 50, 'delta'= 50}, '2' : {...} ")),
-            ],
-            bases=(project.mixin.ModelSignals, models.Model),
-        ),
-        migrations.CreateModel(
             name='Unit',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=128, unique=True)),
                 ('names', models.JSONField(blank=True, default=dict, help_text="names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}")),
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, related_name='profile', serialize=False, to=settings.AUTH_USER_MODEL)),
+                ('language', models.CharField(choices=[('fr', 'french'), ('en', 'english'), ('nl', 'dutch')], db_index=True, default='fr', max_length=2)),
+                ('company', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='users', to='tapio.company')),
             ],
         ),
         migrations.CreateModel(
@@ -108,40 +92,6 @@ class Migration(migrations.Migration):
             bases=(project.mixin.ModelSignals, models.Model),
         ),
         migrations.CreateModel(
-            name='ReportEntry',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('scenario', models.CharField(default="00", max_length=2, help_text='report of this entry')),
-                ('modified_source', models.ForeignKey(help_text='modfied source of this entry', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reportEntries', to='tapio.modifiedsource')),
-                ('report', models.ForeignKey(help_text='Report link sof this entry', on_delete=django.db.models.deletion.CASCADE, related_name='reportEntries', to='tapio.report')),
-                ('source', models.ForeignKey(help_text='source of this entry if no modification', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='reportEntries', to='tapio.source')),
-            ],
-            bases=(project.mixin.ModelSignals, models.Model),
-        ),
-        migrations.AddField(
-            model_name='modifiedsource',
-            name='source',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modifiedSources', to='tapio.source'),
-        ),
-        migrations.CreateModel(
-            name='UserProfile',
-            fields=[
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, related_name='profile', serialize=False, to=settings.AUTH_USER_MODEL)),
-                ('language', models.CharField(choices=[('fr', 'french'), ('en', 'english'), ('nl', 'dutch')], db_index=True, default='fr', max_length=2)),
-                ('company', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='users', to='tapio.company')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Modification',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ratio', models.FloatField(blank=True, default=1, help_text='Ratio to apply to the source')),
-                ('emission_factor', models.FloatField(blank=True, help_text='Modified emission factor for the source', null=True)),
-                ('acquisition_year', models.PositiveSmallIntegerField(blank=True, null=True)),
-            ],
-            bases=(project.mixin.ModelSignals, models.Model),
-        ),
-        migrations.CreateModel(
             name='ReductionStrategy',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -150,35 +100,40 @@ class Migration(migrations.Migration):
             ],
             bases=(project.mixin.ModelSignals, models.Model),
         ),
-        migrations.RemoveField(
-            model_name='reportentry',
-            name='modified_source',
+        migrations.CreateModel(
+            name='Modification',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('ratio', models.FloatField(blank=True, default=1, help_text='Ratio to apply to the source')),
+                ('emission_factor', models.FloatField(blank=True, help_text='Modified emission factor for the source', null=True)),
+                ('effective_year', models.PositiveSmallIntegerField(blank=True, null=True)),
+                ('reduction_strategy', models.ForeignKey(help_text="linked reduction strategy of the modification", on_delete=models.CASCADE, null=False, related_name="modifications", to="tapio.reductionstrategy"))
+            ],
+            bases=(project.mixin.ModelSignals, models.Model),
         ),
-        migrations.RemoveField(
-            model_name='reportentry',
-            name='source',
+        migrations.CreateModel(
+            name='Report',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('names', models.JSONField(blank=True, default=dict, help_text="names of this object in the form of a dictionnary, i.e. {'fr':'Nom', 'en':'Name'}")),
+                ('date', models.DateField()),
+                ('year', models.PositiveSmallIntegerField(blank=True, help_text='Carbon footprint report year', null=True)),
+                ('deltas', models.JSONField(default=dict, editable=False, help_text="delta and total emission by scenarios {'1' : {'initial' = 100, 'modified' = 50, 'delta'= 50}, '2' : {...} ")),
+            ],
+            bases=(project.mixin.ModelSignals, models.Model),
         ),
-        migrations.AlterField(
-            model_name='reportentry',
-            name='report',
-            field=models.ForeignKey(help_text='Report link sof this entry', on_delete=django.db.models.deletion.CASCADE, related_name='report_entries', to='tapio.report'),
+        migrations.CreateModel(
+            name='ReportEntry',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('scenario', models.CharField(default="00", max_length=10, help_text='scenario of this entry "00", "01",...')),
+                ('reduction_strategy', models.ForeignKey(help_text='modfied source of this entry', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='report_entries', to='tapio.reductionstrategy')),
+                ('report', models.ForeignKey(help_text='Report link sof this entry', on_delete=django.db.models.deletion.CASCADE, related_name='report_entries', to='tapio.report')),
+            ],
+            bases=(project.mixin.ModelSignals, models.Model),
         ),
-        migrations.DeleteModel(
-            name='ModifiedSource',
-        ),
-        migrations.AddField(
-            model_name='modification',
-            name='reduction_stategy',
-            field=models.ForeignKey(help_text='linked reduction strategy of the modification', on_delete=django.db.models.deletion.CASCADE, related_name='modifications', to='tapio.reductionstrategy'),
-        ),
-        migrations.AddField(
-            model_name='reportentry',
-            name='reduction_strategy',
-            field=models.ForeignKey(help_text='modfied source of this entry', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='report_entries', to='tapio.reductionstrategy'),
-        ),
-        migrations.RenameField(
-            model_name='modification',
-            old_name='acquisition_year',
-            new_name='effective_year',
+        migrations.AlterUniqueTogether(
+            name="reportentry",
+            unique_together={("reduction_strategy", "scenario", "report")},
         ),
     ]

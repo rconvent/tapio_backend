@@ -87,64 +87,64 @@ class TapioTest(TestCase):
         Modification.objects.create(**{
             "ratio" : 0.5,
             "effective_year" : 2020,
-            "reduction_stategy" : cls.rs_2
+            "reduction_strategy" : cls.rs_2
         })
         Modification.objects.create(**{
             "emission_factor" : 80,
             "effective_year" : 2020,
-            "reduction_stategy" : cls.rs_3
+            "reduction_strategy" : cls.rs_3
         })
         Modification.objects.create(**{
             "ratio" : 0.5,
             "emission_factor" : 80,
             "effective_year" : 2020,
-            "reduction_stategy" : cls.rs_4
+            "reduction_strategy" : cls.rs_4
         })
         Modification.objects.create(**{
             "ratio" : 0.5,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_5
+            "reduction_strategy" : cls.rs_5
         })
         Modification.objects.create(**{
             "emission_factor" : 50,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_6
+            "reduction_strategy" : cls.rs_6
         })
         Modification.objects.create(**{
             "emission_factor" : 80,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_6b
+            "reduction_strategy" : cls.rs_6b
         })
         Modification.objects.create(**{
             "ratio" : 0.5,
             "emission_factor" : 50,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_7
+            "reduction_strategy" : cls.rs_7
         })
         Modification.objects.create(**{
             "ratio" : 0.5,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_8
+            "reduction_strategy" : cls.rs_8
         })
         Modification.objects.create(**{
             "emission_factor" : 50,
             "effective_year" : 2022,
-            "reduction_stategy" : cls.rs_8
+            "reduction_strategy" : cls.rs_8
         })
         Modification.objects.create(**{
             "ratio" : 0.9,
             "effective_year" : 2021,
-            "reduction_stategy" : cls.rs_9
+            "reduction_strategy" : cls.rs_9
         })
         Modification.objects.create(**{
             "ratio" : 0.9,
             "effective_year" : 2022,
-            "reduction_stategy" : cls.rs_9
+            "reduction_strategy" : cls.rs_9
         })
         Modification.objects.create(**{
             "ratio" : 0.9,
             "effective_year" : 2023,
-            "reduction_stategy" : cls.rs_9
+            "reduction_strategy" : cls.rs_9
         })
 
         cls.r  = Report.objects.create(**{
@@ -282,19 +282,19 @@ class TapioTest(TestCase):
         client = APIClient(enforce_csrf_checks=False)
         client.force_authenticate(user=user)
 
-        # test sum reports by year
+        # test sum reports by year and scenario
         self.r.save()
         self.r_2.save()
         response = client.get('/api/report/years_emission/?start_year=2022&end_year=2022&scenario=03',  format='json').data
         self.assertEqual(response.get(2023), 240)
 
-
         # test sum sources emission by year
         self.s_1.save()
         self.s_2.save()
         self.s_3.save()
-        response = client.get('/api/source/years_emission/?acquisition_year_after=2020&end_year_befor=2020',  format='json').data
-        print(response)
+        response = client.get(f'/api/source/years_emission/?ids={self.s_1.id},{self.s_2.id},{self.s_3.id}',  format='json').data
+        self.assertEqual(response.get(2020), 220)
+        self.assertEqual(response.get(2021), 120)
         
 
 

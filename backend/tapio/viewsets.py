@@ -20,19 +20,27 @@ class ReportViewSet(ModelViewSet):
     """    
     The Report is the sum of all the emissions. It should be done once a year    
 
-    list:     Retrieve the list of reports. User ?full=true to access all informations and not a summary</br>
+    list:     Retrieve the list of reports with deltas.</br>
     retrieve: Retrieve all information about a specific report.</br>
     create:   Create a new report.</br>
     delete:   Remove an existing report.</br>
     update:   Update an report.</br>
     """  
     queryset = Report.objects.all().prefetch_related("report_entries")
-    serializer_class = ReportSerializer
+    # serializer_class = ReportSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ReportFilter
     search_fields = ["names"]
 
+    def get_serializer_class(self, *args, **kwargs):
+        """Use lightened serializer for list view."""
+        kwargs['partial'] = True
+        if self.action == "list" :
+            return ReportSimpleSerializer
+        else :
+            return ReportSerializer
+        
     @extend_schema(
         parameters=[
             OpenApiParameter("start_year", OpenApiTypes.INT),
@@ -64,29 +72,45 @@ class ReportViewSet(ModelViewSet):
         
         return Response(emissions)
 
-class ReductionStrategyViewSet(ModelViewSet):
+
+class ReportEntryViewSet(ModelViewSet):
     """    
-    An Emission is every source that generates GreenHouse gases (GHG).    
-    It could be defined as source x emission_factor = total  
+    A report entry is a reduction_strategy in a scenario of a report.
      
-    list:     Retrieve the list of sources.</br>
-    retrieve: Retrieve all information about a specific source.</br>
-    create:   Create a new source.</br>
-    delete:   Remove an existing source.</br>
-    update:   Update an source.</br>
+    list:     Retrieve the list of report entry.</br>
+    retrieve: Retrieve all information about a specific report entry.</br>
+    create:   Create a new report entry.</br>
+    delete:   Remove an existing report entry.</br>
+    update:   Update an report entry.</br>
     """  
     
-    queryset = ReportEntry.objects.all().prefetch_related("source", "modified_source")
+    queryset = ReportEntry.objects.all()
     serializer_class = ReportEntrySerializer
     permission_classes = [IsAuthenticated]
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ReportEntryFilter
+    
+class ReductionStrategyViewSet(ModelViewSet):
+    """    
+    A reduction strategy is a source (and associated modifiactions) to reduce emission.
+    User request param  "year" to see the reduction strategy delta and total emission for 
+    a specific year. 
+     
+    list:     Retrieve the list of reduction strategies.</br>
+    retrieve: Retrieve all information about a specific reduction strategie.</br>
+    create:   Create a new reduction strategie.</br>
+    delete:   Remove an existing reduction strategie.</br>
+    update:   Update an reduction strategie.</br>
+    """  
+    
+    queryset = ReductionStrategy.objects.all().prefetch_related("source", "modifications")
+    serializer_class = ReductionStrategySerializer
+    permission_classes = [IsAuthenticated]
+        
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context.update({"full": self.request.GET.get("full", False)})
+        context.update({"year": self.request.GET.get("year", None)})
 
-        # get report year to computed delta on modified source (not for list view)
-        if context.get("view", object).__dict__.get("action", None) not in ("list", "create") :
-            context.update({"year": self.get_object().report.year})
         return context
 
 
@@ -102,7 +126,7 @@ class SourceViewSet(ModelViewSet):
     update:   Update an source.</br>
     """  
     
-    queryset = Source.objects.all().prefetch_related("modifications")
+    queryset = Source.objects.all()
     serializer_class = SourceSerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter]
@@ -114,21 +138,27 @@ class SourceViewSet(ModelViewSet):
     def get_years_emission(self, request, *args, **kwargs):
         
         queryset = self.filter_queryset(self.get_queryset())
-        print(queryset.count())
+
         queryset = queryset.annotate(
             source_emissions = Coalesce(F("total_emission"), 0.0)
         )
 
+        emissions = {}
         items_list = list(queryset.values("acquisition_year", "lifetime", "total_emission"))
-        date_from = request.query_params.get("acquisition_year_after", 0)
-        date_to = request.query_params.get("end_year_befor", 2999)
-        
-        emissions= {}
-        for year in range(int(date_from), int(date_to)+1):
-            emissions[year] = sum(
-                item.get("total_emission", 0) for item in items_list  if item.get("acquisition_year", 0) <= year <=item.get("acquisition_year", 2999)+(item.get("lifetime") or 0)
-            )
-        
+
+        if items_list :
+            min_year = min([item.get("acquisition_year") for item in items_list if item.get("acquisition_year")])
+            max_year = max([item.get("acquisition_year")+(item.get("lifetime") or 0) for item in items_list if item.get("acquisition_year")])
+
+            date_from = request.query_params.get("acquisition_year_before", min_year)
+            date_to = request.query_params.get("end_year_after", max_year)
+            
+            emissions= {}
+            for year in range(int(date_from), int(date_to)+1):
+                emissions[year] = sum(
+                    item.get("total_emission", 0) for item in items_list  if (item.get("acquisition_year") or min_year) <= year <=(item.get("acquisition_year") or max_year)+(item.get("lifetime") or 0)
+                )
+            
         return Response(emissions)
     
 
