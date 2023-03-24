@@ -129,6 +129,8 @@ class Migration(migrations.Migration):
                 ('scenario', models.CharField(default="00", max_length=10, help_text='scenario of this entry "00", "01",...')),
                 ('reduction_strategy', models.ForeignKey(help_text='modfied source of this entry', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='report_entries', to='tapio.reductionstrategy')),
                 ('report', models.ForeignKey(help_text='Report link sof this entry', on_delete=django.db.models.deletion.CASCADE, related_name='report_entries', to='tapio.report')),
+                ('delta', models.FloatField(help_text="total emission for this report entry", default=0, editable=False, blank=False)),
+                ('total_emission', models.FloatField(help_text="total emission for this report entry", default=0, editable=False, blank=False))
             ],
             bases=(project.mixin.ModelSignals, models.Model),
         ),

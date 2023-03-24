@@ -47,16 +47,16 @@
     "colId": "bbd1b095-c194-459a-8c59-a387c6b0d063",
     "containerId": "",
     "name": "Report",
-    "url": "http://localhost:8000/api/report/1/",
+    "url": "http://localhost:8000/api/report/2/",
     "method": "PATCH",
     "sortNum": 15000,
     "created": "2023-03-02T15:22:27.063Z",
-    "modified": "2023-03-24T12:34:30.245Z",
+    "modified": "2023-03-24T16:22:15.113Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"id\": 1 ,\n  \"names\": {\n      \"fr\": \"Annual Carbon Foot Print report: 2022\"\n  },\n  \"date\": \"2023-01-10\",\n  \"year\": 2021\n}\n",
+      "raw": "{\n  \"names\": {\n      \"fr\": \"Annual Carbon Foot Print report: 2022\"\n  },\n  \"date\": \"2023-01-10\",\n  \"year\": 2021\n}\n",
       "form": []
     },
     "tests": []
