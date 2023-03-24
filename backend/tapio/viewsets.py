@@ -84,7 +84,7 @@ class ReportEntryViewSet(ModelViewSet):
     update:   Update an report entry.</br>
     """  
     
-    queryset = ReportEntry.objects.all()
+    queryset = ReportEntry.objects.all().select_related("reduction_strategy", "reduction_strategy__modifcations")
     serializer_class = ReportEntrySerializer
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]

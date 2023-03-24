@@ -14,6 +14,7 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('silk/', include('silk.urls', namespace='silk')),
     re_path("^api/schema/$", SpectacularAPIView.as_view(), name="schema"),
     re_path("^api/swagger/$", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     re_path("^api/redoc/$", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),

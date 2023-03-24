@@ -34,9 +34,12 @@ class Report(mixin.ModelSignals, models.Model):
         #computed different scenario deltas 
         self.deltas = defaultdict(lambda: defaultdict(int))
         for entry in self.report_entries.all(): 
-            self.deltas[entry.scenario]["modified"] += entry.total_emission
-            self.deltas[entry.scenario]["delta"] += entry.delta
-            self.deltas[entry.scenario]["initial"] += entry.total_emission - entry.delta
+            
+            delta = entry.delta
+
+            self.deltas[entry.scenario]["modified"] += delta.get("total_emission")
+            self.deltas[entry.scenario]["delta"] += delta.get("delta")
+            self.deltas[entry.scenario]["initial"] += delta.get("total_emission") - delta.get("delta")
                 
         
     def post_save(self, *args, **kwargs):

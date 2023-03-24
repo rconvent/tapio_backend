@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'rest_registration',
     'django_middleware_global_request',
     'drf_spectacular',
-    'tapio'
+    'tapio',
+    'silk'
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'silk.middleware.SilkyMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_middleware_global_request.middleware.GlobalRequestMiddleware',
@@ -222,3 +224,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+SILKY_PYTHON_PROFILER = True
+SILKY_META = True
+# SILKY_AUTHENTICATION = True  # User must login
+# SILKY_AUTHORISATION = True  # User must have permissions
+SILKY_PYTHON_PROFILER_BINARY = False
+SILKY_MAX_RECORDED_REQUESTS = 10**4

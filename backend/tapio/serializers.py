@@ -29,15 +29,13 @@ class TokenSerializer(serializers.Serializer):
 
     def get_token(self, obj) -> str:
         token, _ = Token.objects.get_or_create(user=obj)
-        return token.key
-    
+        return token.key 
     
 class UserProfileSerializer(ModelSerializer):
     
     class Meta:
         model = UserProfile
         fields = ["company", "language"]
-
 
 class UserSerializer(ModelSerializer):
     
@@ -131,23 +129,24 @@ class ReductionStrategySerializer(ModelSerializer):
         instance.names = validated_data.get("names")
 
         # create modifications if not
-        ids_list = []
-        for modif_data in modifications_data:
-            if not modif_data.get("id") :
-                modification = Modification.objects.create(reduction_strategy=instance, **modif_data)
-                ids_list += [modification.id]
-            else :
-                modification = Modification.objects.get(id=modif_data.get("id"))
-                # copy modifications if already linked to another reduction strategy
-                if modification.reduction_strategy.id!=instance.id :
-                    modification.id = None
-                    modification.reduction_strategy = instance
-                    modification.save()
-                ids_list += [modification.id]
-        
-        # delete unlinked modified source
-        Modification.objects.filter(reduction_strategy=instance).exclude(id__in=ids_list).delete()
-        instance.save()
+        if modifications_data:
+            ids_list = []
+            for modif_data in modifications_data:
+                if not modif_data.get("id") :
+                    modification = Modification.objects.create(reduction_strategy=instance, **modif_data)
+                    ids_list += [modification.id]
+                else :
+                    modification = Modification.objects.get(id=modif_data.get("id"))
+                    # copy modifications if already linked to another reduction strategy
+                    if modification.reduction_strategy.id!=instance.id :
+                        modification.id = None
+                        modification.reduction_strategy = instance
+                        modification.save()
+                    ids_list += [modification.id]
+            
+            # delete unlinked modified source
+            Modification.objects.filter(reduction_strategy=instance).exclude(id__in=ids_list).delete()
+            instance.save()
 
         return instance
 
@@ -182,7 +181,6 @@ class ReductionStrategySerializer(ModelSerializer):
             "total_emission"
         ]
 
-
 class ReportEntrySerializer(ModelSerializer):
     
     id = serializers.IntegerField(read_only=False, allow_null=True, default=None)
@@ -195,7 +193,6 @@ class ReportEntrySerializer(ModelSerializer):
             "reduction_strategy_id",
             "scenario",
             "delta",
-            "total_emission"
         ]
 
 class ReportSimpleSerializer(ModelSerializer):
@@ -232,23 +229,24 @@ class ReportSerializer(ModelSerializer):
         instance.date = validated_data.get("date")
 
         # create modifications if not
-        ids_list = []
-        for re_data in report_entries_data:
-            if not re_data.get("id") :
-                report_entry = ReportEntry.objects.create(report=instance, **re_data)
-                ids_list += [report_entry.id]
-            else :
-                report_entry = ReportEntry.objects.get(id=re_data.get("id"))
-                # copy report entry if already linked to another report 
-                if report_entry.report.id!=instance.id :
-                    report_entry.id = None
-                    report_entry.report = instance
-                    report_entry.save()
-                ids_list += [report_entry.id]
-        
-        # delete unlinked modified source
-        ReportEntry.objects.filter(report=instance).exclude(id__in=ids_list).delete()
-        instance.save()
+        if report_entries_data :
+            ids_list = []
+            for re_data in report_entries_data:
+                if not re_data.get("id") :
+                    report_entry = ReportEntry.objects.create(report=instance, **re_data)
+                    ids_list += [report_entry.id]
+                else :
+                    report_entry = ReportEntry.objects.get(id=re_data.get("id"))
+                    # copy report entry if already linked to another report 
+                    if report_entry.report.id!=instance.id :
+                        report_entry.id = None
+                        report_entry.report = instance
+                        report_entry.save()
+                    ids_list += [report_entry.id]
+            
+            # delete unlinked modified source
+            ReportEntry.objects.filter(report=instance).exclude(id__in=ids_list).delete()
+            instance.save()
 
         return instance
 

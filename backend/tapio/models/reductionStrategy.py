@@ -3,9 +3,11 @@ import logging
 from functools import reduce
 
 from django.db import models
+from django.db.models import Prefetch, prefetch_related_objects
 from django.utils.translation import gettext as _
 from django_middleware_global_request import get_request
 from project import mixin
+from tapio.models import Modification
 
 
 class ReductionStrategy(mixin.ModelSignals, models.Model):
@@ -32,18 +34,20 @@ class ReductionStrategy(mixin.ModelSignals, models.Model):
         lifetime = self.source.lifetime or 0
         source_emission = self.source.get_total_emission(year=year)
         
-        modifications = self.modifications.filter(effective_year__lte=year) if year else self.modifications.all()
-        modifications = [m for m in modifications if not lifetime or (year or 0) <= (m.effective_year or 0) + lifetime]
+        modifications = list(self.modifications.values("effective_year", "ratio", "emission_factor"))
+        if year :
+            modifications = [m for m in modifications if m.get("effective_year", 2999) <= year] 
+        modifications = [m for m in modifications if not lifetime or (year or 0) <= (m.get("effective_year") or 0) + lifetime]
 
         if not modifications:
             return source_emission
         
         # for modifications in series, we assume than ratio must be applied to the previous
-        ratios = [m.ratio for m in modifications if m.ratio]
+        ratios = [m.get("ratio", 1) for m in modifications]
         ratio = reduce(lambda x, y: x * y, ratios) if ratios else 1
 
         # for modif is series we assume that the newest emission factor is always lower than previous modifications
-        emission_factors = [m.emission_factor for m in modifications if m.emission_factor]
+        emission_factors = [m.get("emission_factor") for m in modifications if m.get("emission_factor")]
         emission_factor = min(emission_factors) if emission_factors else self.source.emission_factor
 
         modifications_emission = ratio * emission_factor * self.source.value

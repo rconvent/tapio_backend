@@ -18,14 +18,24 @@ class ReportEntry(mixin.ModelSignals, models.Model):
 
     class Meta:
         unique_together = ('reduction_strategy', 'scenario', 'report')
-
-    @property
-    def total_emission(self):
-        return self.reduction_strategy.get_total_emission(year=self.report.year) if self.reduction_strategy else 0
     
     @property
     def delta(self):
-        return self.reduction_strategy.get_delta(year=self.report.year) if self.reduction_strategy else 0
+        
+        if not self.reduction_strategy :
+            return {"delta":0, "total_emission" : 0}
+        
+        total_emission = self.reduction_strategy.get_total_emission(year=self.report.year) if self.reduction_strategy else 0
+        if self.reduction_strategy.source.get_total_emission(year=self.report.year) :
+            delta = total_emission - (self.reduction_strategy.source.total_emission or 0)
+        else :  
+            delta = total_emission
+
+        return {
+            "delta" : delta,
+            "total_emission" : total_emission,
+        }
+        
     
     def __str__(self):
         return f"{self.report.get_name} - {self.reduction_strategy.get_name if self.reduction_strategy else None}"

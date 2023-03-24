@@ -24,6 +24,7 @@ ipython = "^8.11.0"
 ipykernel = "^6.21.2"
 django-types = "^0.17.0"
 django-extensions = "^3.2.1"
+django-silk = "^5.0.3"
 
 
 [tool.poetry.group.dev.dependencies]
