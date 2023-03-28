@@ -1,6 +1,7 @@
 
 import logging
 
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext as _
 from django_middleware_global_request import get_request
@@ -26,7 +27,10 @@ class Modification(mixin.ModelSignals, models.Model):
         pass
 
     def post_save(self, *args, **kwargs):
-        pass
+        # delete reduction strategies cached data
+        cache_key = f"reduction_strategy_{self.reduction_strategy.pk}"
+        cache.delete(cache_key)
+
 
 
 

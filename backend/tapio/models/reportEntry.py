@@ -38,9 +38,11 @@ class ReportEntry(mixin.ModelSignals, models.Model):
     def pre_save(self, *args, **kwargs):
         
         if self.reduction_strategy :
+            source_data = self.reduction_strategy.source_data
             self.total_emission = self.reduction_strategy.get_total_emission(year=self.report.year) 
-            if self.reduction_strategy.source.get_total_emission(year=self.report.year) :
-                self.delta = self.total_emission - (self.reduction_strategy.source.total_emission or 0)
+            
+            if self.reduction_strategy.get_source_total_emission(source_data, year=self.report.year) :
+                self.delta = self.total_emission - (source_data.get("total_emission") or 0)
             else :  
                 self.delta = self.total_emission
 

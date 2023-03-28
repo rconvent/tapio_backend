@@ -1,6 +1,7 @@
 
 import logging
 
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext as _
 from django_middleware_global_request import get_request
@@ -38,7 +39,6 @@ class Source(mixin.ModelSignals, models.Model):
             else :
                 return self.total_emission
 
-
     @property
     def get_name(self):
         return str(self.names.get("fr", next((name for name in self.names.values()), "NoName")))
@@ -58,6 +58,10 @@ class Source(mixin.ModelSignals, models.Model):
         
 
     def post_save(self, *args, **kwargs):
-        pass
+        # delete reduction strategies cached data
+        for rs in self.reduction_stategies.all() :
+            cache_key = f"reduction_strategy_{rs.pk}"
+            cache.delete(cache_key)
+
 
 
